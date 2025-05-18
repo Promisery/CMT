@@ -1,0 +1,176 @@
+dataset: nuScenes
+version: v1.0-trainval
+agent_setting: single_agent
+input_representation: graphs
+train_set_args:
+  split: train
+  t_h: 2
+  t_f: 6
+  map_extent: &id001
+  - -50
+  - 50
+  - -20
+  - 80
+  polyline_resolution: 1
+  polyline_length: 20
+  traversal_horizon: 15
+  random_flips: true
+  random_rotates: false
+val_set_args:
+  split: train_val
+  t_h: 2
+  t_f: 6
+  map_extent: *id001
+  polyline_resolution: 1
+  polyline_length: 20
+  traversal_horizon: 15
+  random_flips: false
+  random_rotates: false
+test_set_args:
+  split: val
+  t_h: 2
+  t_f: 6
+  map_extent: *id001
+  polyline_resolution: 1
+  polyline_length: 20
+  traversal_horizon: 15
+  random_flips: false
+  random_rotates: false
+batch_size: 64
+num_workers: 8
+anchors_checkpoint: anchors/64.pkl
+encoder_type: encoder
+encoder_args:
+  norm: post
+  random_mask_prob: 0.15
+  target_agent_feat_size: 5
+  node_feat_size: 6
+  nbr_feat_size: 5
+  emb_size: 32
+  enc_size: 32
+  enc_n_head: 4
+  enc_layers: 1
+  enc_pooling: mean
+  enc_pe: rot-fixed
+  fusion_size: 32
+  fusion_n_head: 4
+  fusion_layers: 1
+  fusion_pooling: none
+  fusion_pe: none
+  dec_size: 32
+  dec_n_head: 4
+  dec_layers: 1
+  dec_pooling: none
+  dec_pe: none
+  activation: silu
+aggregator_type: selector
+aggregator_args:
+  target_agent_enc_size: 32
+  node_enc_size: 32
+  pi_h1_size: 128
+  pi_h2_size: 128
+  horizon: 15
+  num_noi: 50
+  noi_enc_size: 64
+  noi_n_head: 8
+  noi_enc_layers: 2
+  noi_pooling: none
+  noi_pe: none
+  activation: silu
+decoder_type: decoder
+decoder_args:
+  num_modes: 64
+  k: 10
+  n_sample: 1024
+  op_len: 12
+  noi_enc_size: 64
+  anchor_size: 64
+  anchor_n_head: 8
+  anchor_layers: 3
+  anchor_pooling: none
+  anchor_pe: none
+  hidden_size: 256
+  activation: silu
+optim_args:
+  optimizer: adamw
+  optimizer_kwargs:
+    lr: 0.0002
+    weight_decay: 0.01
+  scheduler: cosine
+  scheduler_interval: step
+  scheduler_kwargs:
+    lr_min: 0
+    warmup_lr_init: 0.000002
+    warmup_t: 1500
+losses:
+- mm_nll
+- mtp_loss
+- pi_bc
+loss_weights:
+- 1
+- 1
+- 1
+loss_args:
+- k: 10
+  n_iter: 10
+- use_variance: true
+- dummy: 0
+tr_metrics:
+- min_ade_k
+- min_ade_k
+- min_fde_k
+- miss_rate_k
+- miss_rate_k
+- pi_bc
+- traj_diversity
+- gpu_memory
+tr_metric_args:
+- k: 64
+- k: 32
+- k: 1
+- k: 64
+  dist_thresh: 2
+- k: 32
+  dist_thresh: 2
+- dummy: 0
+- scale: 12
+- dummy: 0
+val_metrics:
+- min_ade_k
+- min_ade_k
+- min_fde_k
+- miss_rate_k
+- miss_rate_k
+- pi_bc
+- traj_diversity
+val_metric_args:
+- k: 5
+- k: 10
+- k: 1
+- k: 5
+  dist_thresh: 2
+- k: 10
+  dist_thresh: 2
+- dummy: 0
+- scale: 12
+test_metrics:
+- min_ade_k
+- min_ade_k
+- miss_rate_k
+- miss_rate_k
+- min_fde_k
+- offroad_rate
+- pi_bc
+- traj_diversity
+test_metric_args:
+- k: 5
+- k: 10
+- k: 5
+  dist_thresh: 2
+- k: 10
+  dist_thresh: 2
+- k: 1
+- dummy: 0
+- dummy: 0
+- scale: 12
+log_freq: 50

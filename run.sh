@@ -1,0 +1,7 @@
+python ./train.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2022 -n 300 -s 2022
+python ./evaluate.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2022 -w logs/2022/checkpoints/best.tar -s 2022
+python ./train.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2023 -n 300 -s 2023
+python ./evaluate.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2023 -w logs/2023/checkpoints/best.tar -s 2023
+python ./train.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2024 -n 300 -s 2024
+python ./evaluate.py -c configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/2024 -w logs/2024/checkpoints/best.tar -s 2024
+python ./ensemble.py -c configs/cmt.yml configs/cmt.yml configs/cmt.yml -r path/to/nuScenes/root/directory -d path/to/directory/with/preprocessed/data -o logs/ensemble -w logs/2022/checkpoints/best.tar logs/2023/checkpoints/best.tar logs/2024/checkpoints/best.tar -s 2024
