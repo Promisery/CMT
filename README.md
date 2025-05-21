@@ -106,4 +106,5 @@ tensorboard --logdir ./logs
 This repository is developed based on the following wonderful projects:
 
 **[PGP](https://github.com/nachiket92/PGP)**
+
 **[x-transformers](https://github.com/lucidrains/x-transformers)**
